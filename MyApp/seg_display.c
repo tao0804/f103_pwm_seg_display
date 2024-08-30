@@ -40,7 +40,8 @@ static uint8_t segCode[] = {
 // 当前显示的数字
 static uint16_t displayNum = 0;
 static uint8_t currentDigit = 0;
-static uint64_t lastUpdateTime = 0;
+static uint8_t segCode_index =0;
+// static uint64_t lastUpdateTime = 0;
 
 // 设置显示的数字
 void seg_setDisplayNum(uint16_t num)
@@ -51,13 +52,13 @@ void seg_setDisplayNum(uint16_t num)
 // 初始化GPIO,已在gpio_init()初始化过
 
 // 增加当前选中的数码管值
-// void increase_value(void) {
-//     if (segCode[num] < 9) {
-//         num++;
-//     } else {
-//         segCode[current_pos] = 0;
-//     }
-// }
+void increase_value(void) {
+    if (segCode_index < 10) {
+        segCode_index++;
+    } else {
+        segCode_index = 0;
+    }
+}
 
 // 数码管显示刷新
 void seg_main(void)
@@ -74,11 +75,15 @@ void seg_main(void)
 	}
 
 	// 获取当前位需要显示的数字
-	uint8_t num = (displayNum / (uint16_t)pow(10, currentDigit)) % 10;
-	uint8_t code = segCode[num];
+	// uint8_t num = (displayNum / (uint16_t)pow(10, currentDigit)) % 10;
+	segCode_index = (displayNum / (uint16_t)pow(10, currentDigit)) % 10;
+
+	// uint8_t code = segCode[num];
+	uint8_t code = segCode[segCode_index];
+
 
 #if SHOW_LEADING_ZERO == 1
-	if (num == 0 && currentDigit != 3 && leadingZeroFlag == 1) {
+	if (segCode_index == 0 && currentDigit != 3 && leadingZeroFlag == 1) {
 		// 如果当前位是0且不是最后一位，且未遇到非零数字，则不显示
 		code = 0xC0;
 	} else {

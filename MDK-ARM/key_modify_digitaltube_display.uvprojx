@@ -610,6 +610,11 @@
               <FileType>1</FileType>
               <FilePath>..\MyApp\seg_display.c</FilePath>
             </File>
+            <File>
+              <FileName>my_key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MyApp\my_key.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

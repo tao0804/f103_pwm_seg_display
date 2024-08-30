@@ -24,6 +24,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "seg_display.h"
+#include "my_key.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -88,7 +89,7 @@ int main(void)
   MX_GPIO_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-seg_setDisplayNum(1234);
+// seg_setDisplayNum(34);
 
   /* USER CODE END 2 */
 
@@ -96,7 +97,8 @@ seg_setDisplayNum(1234);
   /* USER CODE BEGIN WHILE */
 	while (1) {
     /* USER CODE END WHILE */
-seg_main();
+// seg_main();
+key_main();
     /* USER CODE BEGIN 3 */
 	}
   /* USER CODE END 3 */

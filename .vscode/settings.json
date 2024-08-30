@@ -3,6 +3,7 @@
         "*.C": "c",
         "main.h": "c",
         "stm32f1xx_hal_gpio.h": "c",
-        "gpio.h": "c"
+        "gpio.h": "c",
+        "my_key.h": "c"
     }
 }
