@@ -48,30 +48,21 @@ void seg_setDisplayNum(uint16_t num)
 	displayNum = num;
 }
 
-// 初始化GPIO
-// void seg_init(void)
-// {
-// 	GPIO_InitTypeDef GPIO_InitStructure;
-// 	GPIO_InitStructure.Mode = GPIO_MODE_OUTPUT_PP;
-// 	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
+// 初始化GPIO,已在gpio_init()初始化过
 
-// 	// 初始化段选引脚
-// 	for (int i = 0; i < 8; i++) {
-// 		GPIO_InitStructure.Pin = segPins[i].pin;
-// 		HAL_GPIO_Init(segPins[i].port, &GPIO_InitStructure);
-// 	}
-
-// 	// 初始化位选引脚
-// 	for (int i = 0; i < 4; i++) {
-// 		GPIO_InitStructure.Pin = digitPins[i].pin;
-// 		HAL_GPIO_Init(digitPins[i].port, &GPIO_InitStructure);
-// 	}
+// 增加当前选中的数码管值
+// void increase_value(void) {
+//     if (segCode[num] < 9) {
+//         num++;
+//     } else {
+//         segCode[current_pos] = 0;
+//     }
 // }
 
 // 数码管显示刷新
 void seg_main(void)
 {
-	// static uint8_t leadingZeroFlag = 0;    // 标记是否已经找到非零数字
+	static uint8_t leadingZeroFlag = 0;    // 标记是否已经找到非零数字
 
 	uint32_t currentTime = HAL_GetTick();
 	// 检查是否已经过了10ms
@@ -83,10 +74,17 @@ void seg_main(void)
 	}
 
 	// 获取当前位需要显示的数字
-	// uint8_t num = (displayNum >> (currentDigit * 4)) & 0x0F;
 	uint8_t num = (displayNum / (uint16_t)pow(10, currentDigit)) % 10;
-
 	uint8_t code = segCode[num];
+
+#if SHOW_LEADING_ZERO == 1
+	if (num == 0 && currentDigit != 3 && leadingZeroFlag == 1) {
+		// 如果当前位是0且不是最后一位，且未遇到非零数字，则不显示
+		code = 0xC0;
+	} else {
+		leadingZeroFlag = 1;    // 遇到非零数字，后续都显示
+	}
+#endif
 
 	// 设置段选引脚
 	for (int i = 0; i < 8; i++) {
