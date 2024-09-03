@@ -23,8 +23,10 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "seg_display.h"
-#include "my_key.h"
+// #include "seg_display.h"
+// #include "my_key.h"
+#include "my_app.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -89,16 +91,21 @@ int main(void)
   MX_GPIO_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-// seg_setDisplayNum(34);
  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+ user_pwm_set(50);
+// seg_setDisplayNum(34);
+// seg_main();
+// seg_main();
+//  __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, pulse_width);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	while (1) {
+    // MyApp_Run();
     /* USER CODE END WHILE */
-// seg_main();
-key_main();
+
+// key_main();
     /* USER CODE BEGIN 3 */
 	}
   /* USER CODE END 3 */

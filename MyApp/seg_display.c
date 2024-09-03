@@ -39,8 +39,12 @@ static uint8_t segCode[] = {
 
 // 当前显示的数字
 static uint16_t displayNum = 0;
-static uint8_t currentDigit = 0;
-static uint8_t segCode_index =0;
+// static uint8_t currentDigit = 0;
+// static uint8_t segCode_index =0;	// 也即数码管显示数字
+
+uint8_t currentDigit = 0;
+uint8_t segCode_index =0;
+
 // static uint64_t lastUpdateTime = 0;
 
 // 设置显示的数字
@@ -113,3 +117,16 @@ void seg_main(void)
 	// lastUpdateTime = currentTime;
 	// }
 }
+
+
+// 数码管显示
+// void Segment_Display(uint8_t currentDigit, uint8_t number) {
+
+// 	// 关闭currentDigit对应位选，可以不用有
+// 	HAL_GPIO_WritePin(digitPins[i].port, digitPins[i].pin, GPIO_PIN_SET);
+
+
+//     // 发送段码
+//     HAL_GPIO_WritePin(SEGMENT_PORT, 0xFF, GPIO_PIN_RESET);  // 关闭所有段
+//     HAL_GPIO_WritePin(SEGMENT_PORT, segment_code[number], GPIO_PIN_SET); // 显示对应数字
+// }

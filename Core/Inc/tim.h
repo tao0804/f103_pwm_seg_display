@@ -43,6 +43,7 @@ void MX_TIM2_Init(void);
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
 /* USER CODE BEGIN Prototypes */
+void user_pwm_set(uint8_t duty_cycle);
 
 /* USER CODE END Prototypes */
 

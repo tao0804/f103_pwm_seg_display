@@ -615,6 +615,11 @@
               <FileType>1</FileType>
               <FilePath>..\MyApp\my_key.c</FilePath>
             </File>
+            <File>
+              <FileName>my_app.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MyApp\my_app.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

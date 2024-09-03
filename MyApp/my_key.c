@@ -9,32 +9,21 @@
 // #define key2_Pin GPIO_PIN_6
 // #define key2_GPIO_Port GPIOA
 
-// #define KEY1_PIN        GPIO_Pin_0
-// #define KEY2_PIN        GPIO_Pin_1
-// #define KEY_PORT        GPIOA
-
 // 按键防抖时间
 #define DEBOUNCE_TIME   5
 
 // 按键状态变量
-static uint8_t key1_state = KEY_NOT_PRESSED;
-static uint8_t key2_state = KEY_NOT_PRESSED;
+// static uint8_t key1_state = KEY_NOT_PRESSED;
+// static uint8_t key2_state = KEY_NOT_PRESSED;
+
+uint8_t key1_state = KEY_NOT_PRESSED;
+uint8_t key2_state = KEY_NOT_PRESSED;
+
 static uint8_t key1_cnt = 0;
 static uint8_t key2_cnt = 0;
 
 // 按键初始化,已在gpio_init里初始化过
 
-// void key_init(void) {
-//     GPIO_InitTypeDef GPIO_InitStructure;
-
-//     // 使能 GPIOA 时钟
-//     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-
-//     // 配置按键引脚为浮空输入模式
-//     GPIO_InitStructure.GPIO_Pin = KEY1_PIN | KEY2_PIN;
-//     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-//     GPIO_Init(KEY_PORT, &GPIO_InitStructure);
-// }
 
 // 按键1扫描函数
 uint8_t key1_scan(void) {
@@ -64,8 +53,8 @@ void key_main(void) {
         }
     } else {
         key1_cnt = 0;
-        key1_state = KEY_NOT_PRESSED;
 		 HAL_GPIO_WritePin(GPIOD, GPIO_PIN_1, GPIO_PIN_SET);
+        key1_state = KEY_NOT_PRESSED;
 
     }
 
@@ -81,8 +70,8 @@ void key_main(void) {
         }
     } else {
         key2_cnt = 0;
-        key2_state = KEY_NOT_PRESSED;
 		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+        key2_state = KEY_NOT_PRESSED;
 
     }
 }

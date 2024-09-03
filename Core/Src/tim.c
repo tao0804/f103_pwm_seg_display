@@ -67,7 +67,7 @@ void MX_TIM2_Init(void)
     Error_Handler();
   }
   sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = 800;
+  sConfigOC.Pulse = 1000;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
   if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
@@ -138,6 +138,22 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
   }
 }
 
-/* USER CODE BEGIN 1 */
 
+// 用户接口，用于设置占空比
+void user_pwm_set(uint8_t duty_cycle)
+{
+    // 占空比范围限制在0-100
+    if (duty_cycle > 100)
+    {
+        duty_cycle = 100;
+    }
+
+    // 计算实际的脉冲值
+    // uint32_t pulse_width = (duty_cycle * TIMER_PERIOD) / 100;
+    uint32_t pulse_width = duty_cycle * 10;
+
+
+    // 设置新的占空比
+    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, pulse_width);
+}
 /* USER CODE END 1 */

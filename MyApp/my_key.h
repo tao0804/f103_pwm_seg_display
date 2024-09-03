@@ -18,6 +18,9 @@
 //     KEY_RELEASED         // 按键释放
 // } KeyState_t;
 
+extern uint8_t key1_state;
+extern uint8_t key2_state;
+
 void key_init(void);         // 按键初始化
 void key_main(void);         // 按键状态刷新
 uint8_t key_scan(void);      // 按键扫描

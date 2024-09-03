@@ -10,6 +10,9 @@ typedef struct {
 	uint16_t pin;
 } SegPinConfig;
 
+extern uint8_t currentDigit;
+extern uint8_t segCode_index;
+
 // 段选引脚配置 (A-G和DP)
 extern const SegPinConfig segPins[8];
 
