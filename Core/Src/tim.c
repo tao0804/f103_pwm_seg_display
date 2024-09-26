@@ -138,9 +138,14 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
   }
 }
 
+void user_pwm_init(void)
+{
+	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+	user_duty_cycle_set(50);
+}
 
-// 用户接口，用于设置占空比
-void user_pwm_set(uint8_t duty_cycle)
+// 用户接口,用于设置占空比
+void user_duty_cycle_set(uint8_t duty_cycle)
 {
     // 占空比范围限制在0-100
     if (duty_cycle > 100)
@@ -151,7 +156,6 @@ void user_pwm_set(uint8_t duty_cycle)
     // 计算实际的脉冲值
     // uint32_t pulse_width = (duty_cycle * TIMER_PERIOD) / 100;
     uint32_t pulse_width = duty_cycle * 10;
-
 
     // 设置新的占空比
     __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, pulse_width);
