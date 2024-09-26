@@ -2,7 +2,7 @@
 #define __SEG_DISPLAY_H
 
 #include "stm32f103xb.h"
-
+#include "stdbool.h"
 
 // 段选配置结构体
 typedef struct {
@@ -24,7 +24,10 @@ extern const SegPinConfig digitPins[4];
 
 // 函数声明
 void seg_init(void);
-void seg_setDisplayNum(uint16_t num);
+void digCur_position_change(void);
+void increase_value(void);
+// void seg_setDisplayNum(uint16_t num);
 void seg_main(void);
-
+void seg_setDisplayNum(uint8_t digit1, uint8_t digit2, uint8_t digit3, uint8_t digit4);
 #endif
+

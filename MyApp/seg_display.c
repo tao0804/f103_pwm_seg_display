@@ -35,98 +35,90 @@ static uint8_t segCode[] = {
 	0xF8,    // 7
 	0x80,    // 8
 	0x90     // 9
+	// 0x00,	//全亮
 };
 
 // 当前显示的数字
-static uint16_t displayNum = 0;
+// static uint16_t displayNum = 0;
 // static uint8_t currentDigit = 0;
 // static uint8_t segCode_index =0;	// 也即数码管显示数字
 
 uint8_t currentDigit = 0;
-uint8_t segCode_index =0;
+uint8_t segCode_index = 0;
+uint8_t position = 0;
 
-// static uint64_t lastUpdateTime = 0;
+static uint64_t digLastUpdateTime = 0;
 
-// 设置显示的数字
-void seg_setDisplayNum(uint16_t num)
+static uint8_t pointState[4] = {0, 0, 0, 0};
+static uint8_t displayNum[4] = {0, 0, 0, 0};
+
+void digCur_position_change(void)
 {
-	displayNum = num;
+	// 关闭前一位小数点
+	if (position < 4) {
+		pointState[position] = 0;
+	}
+	// 更新位置
+	position = (position + 1) % 4; 
+	// 打开新位置的小数点
+	pointState[position] = 1; 
+    // return position;
 }
 
-// 初始化GPIO,已在gpio_init()初始化过
-
 // 增加当前选中的数码管值
-void increase_value(void) {
-    if (segCode_index < 10) {
-        segCode_index++;
-    } else {
-        segCode_index = 0;
-    }
+void increase_value(void)
+{
+    // 将当前选中的数码管值加一
+	if (pointState[position]) {
+    	displayNum[position] = (displayNum[position] + 1) % 10;
+	}
+}
+
+void seg_setDisplayNum(uint8_t digit1, uint8_t digit2, uint8_t digit3, uint8_t digit4)
+{
+    displayNum[3] = digit1 % 10; // 保证为0-9
+    displayNum[2] = digit2 % 10;
+    displayNum[1] = digit3 % 10;
+    displayNum[0] = digit4 % 10;
 }
 
 // 数码管显示刷新
 void seg_main(void)
 {
-	static uint8_t leadingZeroFlag = 0;    // 标记是否已经找到非零数字
-
+	// uint32_t currentTime = HAL_GetTick();
 	uint32_t currentTime = HAL_GetTick();
+
 	// 检查是否已经过了10ms
-	// if ((currentTime - lastUpdateTime) >= 10) {
-		
-	// 关闭所有位选
-	for (int i = 0; i < 4; i++) {
-		HAL_GPIO_WritePin(digitPins[i].port, digitPins[i].pin, GPIO_PIN_SET);
-	}
+	if ((currentTime - digLastUpdateTime) >= 10)
+	{
+		// 获取当前位需要显示的数字
+		uint8_t code = segCode[displayNum[currentDigit]];
 
-	// 获取当前位需要显示的数字
-	// uint8_t num = (displayNum / (uint16_t)pow(10, currentDigit)) % 10;
-	segCode_index = (displayNum / (uint16_t)pow(10, currentDigit)) % 10;
-
-	// uint8_t code = segCode[num];
-	uint8_t code = segCode[segCode_index];
-
-
-#if SHOW_LEADING_ZERO == 1
-	if (segCode_index == 0 && currentDigit != 3 && leadingZeroFlag == 1) {
-		// 如果当前位是0且不是最后一位，且未遇到非零数字，则不显示
-		code = 0xC0;
-	} else {
-		leadingZeroFlag = 1;    // 遇到非零数字，后续都显示
-	}
-#endif
-
-	// 设置段选引脚
-	for (int i = 0; i < 8; i++) {
-		if (code & (1 << i)) {
-			HAL_GPIO_WritePin(segPins[i].port, segPins[i].pin, GPIO_PIN_SET);
-		} else {
-			HAL_GPIO_WritePin(segPins[i].port, segPins[i].pin, GPIO_PIN_RESET);
+		// 如果当前位启用小数点,将小数点段位设置为1
+		if (pointState[currentDigit]) {
+			code &= 0x7F;
 		}
+
+		// 关闭所有位选
+		for (int i = 0; i < 4; i++) {
+			HAL_GPIO_WritePin(digitPins[i].port, digitPins[i].pin, GPIO_PIN_SET);
+		}
+
+		// 设置段选引脚
+		for (int i = 0; i < 8; i++) {
+			if (code & (1 << i)) {
+				HAL_GPIO_WritePin(segPins[i].port, segPins[i].pin, GPIO_PIN_SET);
+			} else {
+				HAL_GPIO_WritePin(segPins[i].port, segPins[i].pin, GPIO_PIN_RESET);
+			}
+		}
+
+		// 打开当前位选
+		HAL_GPIO_WritePin(digitPins[currentDigit].port, digitPins[currentDigit].pin, GPIO_PIN_RESET);
+
+		// 更新当前位
+		currentDigit = (currentDigit + 1) % 4;
+		digLastUpdateTime = currentTime;
 	}
-
-	// 打开当前位选
-	HAL_GPIO_WritePin(digitPins[currentDigit].port, digitPins[currentDigit].pin, GPIO_PIN_RESET);
-
-	// 更新当前位
-	currentDigit = (currentDigit + 1) % 4;
-
-	// 当切换到下一位时，如果是第一位（即 currentDigit == 0），重置首位零标记
-	// if (currentDigit == 0) {
-	// 	leadingZeroFlag = 0;
-	// }
-	// lastUpdateTime = currentTime;
-	// }
 }
 
-
-// 数码管显示
-// void Segment_Display(uint8_t currentDigit, uint8_t number) {
-
-// 	// 关闭currentDigit对应位选，可以不用有
-// 	HAL_GPIO_WritePin(digitPins[i].port, digitPins[i].pin, GPIO_PIN_SET);
-
-
-//     // 发送段码
-//     HAL_GPIO_WritePin(SEGMENT_PORT, 0xFF, GPIO_PIN_RESET);  // 关闭所有段
-//     HAL_GPIO_WritePin(SEGMENT_PORT, segment_code[number], GPIO_PIN_SET); // 显示对应数字
-// }

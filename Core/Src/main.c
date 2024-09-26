@@ -91,21 +91,19 @@ int main(void)
   MX_GPIO_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
- HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
- user_pwm_set(50);
-// seg_setDisplayNum(34);
-// seg_main();
-// seg_main();
-//  __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, pulse_width);
+	user_pwm_init();
+	user_duty_cycle_set(80);
+  seg_setDisplayNum(2,4,6,8);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	while (1) {
-    // MyApp_Run();
+    MyApp_Run();
+    HAL_Delay(10);
     /* USER CODE END WHILE */
 
-// key_main();
+	// key_main();
     /* USER CODE BEGIN 3 */
 	}
   /* USER CODE END 3 */

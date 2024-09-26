@@ -29,40 +29,28 @@ void handleKeyPress(void) {
 }
 */
 
+bool key1_handled = false;
+bool key2_handled = false;
 
-// 初始化函数MyApp_Init(),实际是gpio_init()
 
 // 应用层主循环,在main.c调用
 void MyApp_Run(void)
 {
-	key_main();
 	// 读取按键状态
-	if(key1_state == KEY_PRESSED){
-
-		currentDigit = (currentDigit + 1) % 4;
-		
-	}
-	else if(key2_state == KEY_PRESSED){
-		segCode_index++;
-
-		// 设置段选引脚
-	for (int8_t i = 0; i < 8; i++) {
-		if (segCode_index & (1 << i)) {
-			HAL_GPIO_WritePin(segPins[i].port, segPins[i].pin, GPIO_PIN_SET);
-		} else {
-			HAL_GPIO_WritePin(segPins[i].port, segPins[i].pin, GPIO_PIN_RESET);
-		}
-	HAL_GPIO_WritePin(digitPins[currentDigit].port, digitPins[currentDigit].pin, GPIO_PIN_RESET);
-
+	key_main();
+	if (key1_state == KEY_PRESSED && !key1_handled) {
+		digCur_position_change(); 
+		key1_handled = true;
+	}else if (key1_state == KEY_NOT_PRESSED) {
+		key1_handled = false;
 	}
 
+	if (key2_state == KEY_PRESSED && !key2_handled) {
+		increase_value();
+		key2_handled = true;
+	}else if (key2_state == KEY_NOT_PRESSED) {
+		key2_handled = false;
 	}
-
-	// 判断按键状态，并进行相应的操作
-
-
-	// 其他应用层逻辑处理
+	seg_main();
 }
-
-
 
