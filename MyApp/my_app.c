@@ -31,6 +31,7 @@ void handleKeyPress(void) {
 
 bool key1_handled = false;
 bool key2_handled = false;
+bool duty_cycle_handled = false;
 
 
 // 应用层主循环,在main.c调用
@@ -52,5 +53,20 @@ void MyApp_Run(void)
 		key2_handled = false;
 	}
 	seg_main();
+
+    // 检查按键状态
+    if (key1_state == KEY_NOT_PRESSED && key2_state == KEY_NOT_PRESSED) {
+        // 获取当前显示的十进制值
+        uint32_t currentDecimalValue = seg_getDisplayDecimal();
+
+        // 如果数字小于等于100，设置为占空比大小
+        if (currentDecimalValue <= 100) {
+            user_duty_cycle_set(currentDecimalValue); // 假设你有一个设置占空比的函数
+			duty_cycle_handled = true;
+        }
+    }else
+		duty_cycle_handled = false;
+
 }
+
 

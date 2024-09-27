@@ -122,3 +122,24 @@ void seg_main(void)
 	}
 }
 
+// void seg_setDisplayDecimal(uint32_t decimalValue)
+// {
+//     // 确保输入值在0到9999范围内
+//     if (decimalValue > 9999) {
+//         decimalValue = 9999;
+//     }
+
+//     // 从最低位开始分解十进制数
+//     displayNum[0] = decimalValue % 10; // 个位
+//     displayNum[1] = (decimalValue / 10) % 10; // 十位
+//     displayNum[2] = (decimalValue / 100) % 10; // 百位
+//     displayNum[3] = (decimalValue / 1000) % 10; // 千位
+// }
+// 获取当前数码管显示的十进制数
+uint32_t seg_getDisplayDecimal(void)
+{
+    // 计算当前显示的四位数码管的十进制值
+    return (displayNum[3] * 1000) + (displayNum[2] * 100) + (displayNum[1] * 10) + displayNum[0];
+}
+
+
